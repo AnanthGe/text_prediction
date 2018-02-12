@@ -41,16 +41,18 @@ if(!dir.exists("data/compressed")) {
 
       foreach(data_file = data_en_files) %dopar% {
         ## Read Data
-        dat <- readLines(con = file(open = data_file),
+        file_name <- paste("data/raw/final/en_US/",data_file,sep="")
+
+        dat <- readLines(con = file(file_name, "r"),
                          encoding = "UTF-8",
                          skipNul = TRUE)
         ## Compress & Save
         saveRDS(object = dat, file = paste("data/compress/",
                                            strsplit(data_file, ".txt"),
                                            ".rds", sep = ""),
-                ascii = FALSE,
-                compress = TRUE,
-                refhook = NULL)
+                ascii = FALSE, compress = TRUE)
+
+
       }
 
 }
