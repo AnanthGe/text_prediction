@@ -1,6 +1,7 @@
 #' Download and store data files in an optimal format
 #'
 #' Data:  https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip
+#' @author : Ananth Geethanath
 #'
 
 
@@ -8,7 +9,7 @@ source("scripts/globals.R")
 
 setwd(HOME)
 
-if(!dir.exists("./data")) {
+if(!dir.exists("data")) {
   print("Downloading Data files...")
   ## Create directories to store raw data
   dir.create("data/raw", showWarnings = FALSE, recursive = TRUE)
@@ -28,14 +29,14 @@ if(!dir.exists("./data")) {
 #' https://csgillespie.github.io/efficientR/efficient-inputoutput.html
 #'
 
-if(!dir.exists("data/compressed")) {
+if(!dir.exists("data/compress")) {
   ## Create the directory
   dir.create("data/compress", showWarnings = FALSE)
 
       ## Read the data files in english locale
       data_en_files <- list.files(path = "data/raw/final/en_US")
 
-      ## Read/Save parallelly
+      ## Read/Save all the files in the directory, parallelly
       local_clusters <- detectCores() - 1
       registerDoParallel(local_clusters)
 
@@ -46,7 +47,10 @@ if(!dir.exists("data/compressed")) {
         dat <- readLines(con = file(file_name, "r"),
                          encoding = "UTF-8",
                          skipNul = TRUE)
-        ## Compress & Save
+
+        #' Compress & Save. Did not observe major difference
+        #' with /w/o using the compress switch
+
         saveRDS(object = dat, file = paste("data/compress/",
                                            strsplit(data_file, ".txt"),
                                            ".rds", sep = ""),
