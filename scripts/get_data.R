@@ -1,9 +1,11 @@
 #' Download and store data files in an optimal format
 #'
-#' Data:  https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip
-#' @author : Ananth Geethanath
+#' Data:
+#' https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip
 #'
 
+#' Research the RDF/XML format
+#' https://en.wikipedia.org/wiki/Resource_Description_Framework
 
 source("scripts/globals.R")
 
@@ -12,7 +14,7 @@ setwd(HOME)
 if(!dir.exists("data")) {
   print("Downloading Data files...")
   ## Create directories to store raw data
-  dir.create("data/raw", showWarnings = FALSE, recursive = TRUE)
+  dir.create(data.raw.dir, showWarnings = FALSE, recursive = TRUE)
 
   file_name <- "./data/raw/Coursera-SwiftKey.zip"
   data_url <- "https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip"
@@ -29,16 +31,14 @@ if(!dir.exists("data")) {
 #' https://csgillespie.github.io/efficientR/efficient-inputoutput.html
 #'
 
-if(!dir.exists("data/compress")) {
+if(!dir.exists(data.compress.dir)) {
   ## Create the directory
-  dir.create("data/compress", showWarnings = FALSE)
+  dir.create(data.compress.dir, showWarnings = FALSE)
 
       ## Read the data files in english locale
-      data_en_files <- list.files(path = "data/raw/final/en_US")
+      data_en_files <- list.files(path = data.raw.en_US)
 
       ## Read/Save all the files in the directory, parallelly
-      local_clusters <- detectCores() - 1
-      registerDoParallel(local_clusters)
 
       foreach(data_file = data_en_files) %dopar% {
         ## Read Data
