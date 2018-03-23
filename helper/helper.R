@@ -1,6 +1,6 @@
 #' Create a Term Document Matrix from a large blob of words.
 #'
-#' the Term Document Matrix is created after the following transformations
+#' Term Document Matrix is created after the following transformations
 #' 1. Convert the complete document to lower case
 #' 2. All Numbers are removed
 #' 3. All stop words are removed assuming that the doc is in english
@@ -9,7 +9,7 @@
 #'
 #' A matrix is returned to the user for further processing
 
-createTDM <-
+create.tdm <-
   function(data) {
     ## Accepts character input
 
@@ -33,5 +33,43 @@ createTDM <-
 
   }
 
+
+
+#' I'll take the number of workers you need and the length of the dataframe
+#' I'll give you the list containing the group numbers that you can then
+#' attach as a column to the
+get.group.numbers <- function(number.workers, length.obs){
+
+  group.numbers <- NULL
+
+  if(number.workers <=1) {
+    print("Parallel processing not possible.....")
+    group.numbers <- -1} # sending -1 if parallel not possible
+
+  else{
+    seq.tail <- length.obs %% number.workers
+
+    if(seq.tail == 0){
+
+      first.group.limit <- (length.obs - seq.tail)/number.workers
+
+      group.numbers <- rep(1:number.workers, first.group.limit)
+
+    }
+
+    else{
+      first.group.limit <- (length.obs - seq.tail)/number.workers
+
+      first.group <- rep(1:number.workers, first.group.limit)
+
+      second.group <- 1:seq.tail
+
+      group.numbers <- c(first.group, second.group)
+    }
+  }
+
+  return(group.numbers)
+
+}
 
 

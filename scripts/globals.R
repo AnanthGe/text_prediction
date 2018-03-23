@@ -1,6 +1,7 @@
-#' Globals File
+#' Data directory structure
 #'
-#'
+#' Below are all the data directories that are
+#' created to store data sets of different sizes
 
 locale <- "en_US"
 data.raw.dir <- "data/raw"
@@ -18,17 +19,21 @@ prediction.data.dir <- "prediction/data"
 #'
 #'
 #'
-
-
-
 suppressPackageStartupMessages(library(doParallel))
 suppressPackageStartupMessages(library(tm))
-
+suppressPackageStartupMessages(library(stringi))
+suppressPackageStartupMessages(library(multidplyr))
 ## Set the project home Directory
 TXTPROCHOME <- list("HOME" = normalizePath(getwd()))
 suppressMessages(attach(TXTPROCHOME))
 
-## Discover how many clusters are possible
-local_clusters <- detectCores() - 1
-suppressMessages(attach(list("CLUSTERS" = local_clusters)))
-registerDoParallel(local_clusters)
+
+#' Preparatory activities for parallel processing
+#'
+#' We'll use n-1 cores for processing in parallel
+#'
+#'
+number.workers <- parallel::detectCores()
+## Setup to do parallel processing
+clusters <- makeCluster(number.workers)
+registerDoParallel(clusters)

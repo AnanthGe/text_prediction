@@ -8,11 +8,12 @@
 #' sources are considered as stratas
 
 source("scripts/globals.R")
+set.seed(44444)
 
 ## Check if the data files are downloaded and compressed
 if(!dir.exists(data.compress.dir)) {
   message("getting data first...")
-  source("scripts/get_data.R")
+  source("scripts/get.data.R")
 }
 
 if(!dir.exists(data.samples.dir)) {
@@ -27,35 +28,35 @@ if(!dir.exists(data.samples.dir)) {
     corpus.test <- c()
 
     ## train, devtest, test percentages
-    percent_train <- 0.7
-    percent_devtest <- 0.1
-    percent_test <- 0.2
+    percent.train <- 0.7
+    percent.devtest <- 0.1
+    percent.test <- 0.2
 
 
-    data_files <- list.files(data.compress.dir)
+    data.files <- list.files(data.compress.dir)
 
-    foreach(data_file = data_files) %do% {
+    foreach(data.file = data.files) %do% {
 
-      message(paste("Processing File:", data_file, sep = ''))
-      corpus <- readRDS(sprintf("%s/%s", data.compress.dir, data_file))
-      corpus_length <- length(corpus)
+      message(paste("Processing File:", data.file, sep = ''))
+      corpus <- readRDS(sprintf("%s/%s", data.compress.dir, data.file))
+      corpus.length <- length(corpus)
 
       ## Get sample counts
-      train_count <- ceiling(corpus_length*percent_train)
-      test_count <- ceiling(corpus_length*percent_test)
-      devtest_count <- corpus_length - train_count - test_count
+      train.count <- ceiling(corpus.length*percent.train)
+      test.count <- ceiling(corpus.length*percent.test)
+      devtest.count <- corpus.length - train.count - test.count
 
       ## Get sample ids
-      ids <- 1:corpus_length
-      train_ids <- sample(ids, train_count, replace = FALSE)
-      test_ids <- sample(ids[-train_ids],test_count, replace = FALSE)
-      devtest_ids <- sample(ids[-c(train_ids, test_ids)],
-                              devtest_count, replace = FALSE)
+      ids <- 1:corpus.length
+      train.ids <- sample(ids, train.count, replace = FALSE)
+      test.ids <- sample(ids[-train.ids],test.count, replace = FALSE)
+      devtest.ids <- sample(ids[-c(train.ids, test.ids)],
+                              devtest.count, replace = FALSE)
 
       ## Get Sample Data
-      corpus.train <- c(corpus.train, corpus[train_ids])
-      corpus.test <- c(corpus.test, corpus[test_ids])
-      corpus.devtest <- c(corpus.devtest, corpus[devtest_ids])
+      corpus.train <- c(corpus.train, corpus[train.ids])
+      corpus.test <- c(corpus.test, corpus[test.ids])
+      corpus.devtest <- c(corpus.devtest, corpus[devtest.ids])
 
     }
 
