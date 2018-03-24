@@ -23,6 +23,9 @@ suppressPackageStartupMessages(library(doParallel))
 suppressPackageStartupMessages(library(tm))
 suppressPackageStartupMessages(library(stringi))
 suppressPackageStartupMessages(library(multidplyr))
+suppressPackageStartupMessages(library(RWeka))
+
+
 ## Set the project home Directory
 TXTPROCHOME <- list("HOME" = normalizePath(getwd()))
 suppressMessages(attach(TXTPROCHOME))
