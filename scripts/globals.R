@@ -9,8 +9,8 @@ data.raw.en_US <- "data/raw/final/en_US"
 data.compress.dir <- "data/compress"
 data.samples.dir <- "data/samples"
 data.clean.dir <- "data/clean"
-data.clean.stage1.dir <- "data/clean/stage1"
-data.clean.stage2.dir <- "data/clean/stage2"
+data.temp.dir <- "data/temp"
+data.temp.ng.dir <- "data/temp/ng"
 model.data.dir <- "model/data"
 prediction.data.dir <- "prediction/data"
 
@@ -40,3 +40,12 @@ number.workers <- parallel::detectCores()
 ## Setup to do parallel processing
 clusters <- makeCluster(number.workers)
 registerDoParallel(clusters)
+
+
+#' Serial processing for ngrams
+#'
+#'
+
+chunk.size <- 5000
+
+

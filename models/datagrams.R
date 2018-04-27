@@ -6,54 +6,101 @@
 #' eventually ngrams
 #'
 #'
-#'
+
 
 source("scripts/globals.R")
 source("helper/helper.R")
 
 
+get.file.chunks <- function(txt, file.name) {
 
+  #' @param txt data to be broken into chunks
+  #' @file.name Name forchank files
+  #' @return file chunks in temp folder
 
-t1 <- Sys.time()
-x<- get.ngrams(dat, 2)
-t2 <- Sys.time()
+  print("Creating temp directory....")
+  if(!dir.exists(data.temp.dir)) dir.create(data.temp.dir, showWarnings = FALSE)
 
+  number.files <- round(length(txt)/chunk.size, digits = 0)
 
+  ids <- get.group.numbers(number.files, length(txt))
 
+  corpus <- as.data.frame(cbind(id,txt))
 
-#' Gets the ngram info as a list of class character
-#'
-#' Takes in a file of cleansed strings
+  print("Starting to create chunks....")
+  for(iter in 1:max(ids)) {
 
-get.ngrams <- function(txt, n) {
+      write.csv(subset(corpus, id == iter),
+              sprintf("%s/%s_%d.csv", data.temp.dir, file.name, iter),
+              row.names = FALSE)
 
-  #'@param txt text corpus
-  #'@param n ngram
-
-  group.numbers <- get.group.numbers(number.workers, length(txt))
-
-  corpus.txt <- as.data.frame(group.numbers)
-
-  corpus.txt$txt <- txt
-
-  clusters <- create_cluster(number.workers, quiet = TRUE)
-
-  group.corpus.txt <- multidplyr::partition(corpus.txt, group.numbers)
-
-  group.corpus.txt <-
-  group.corpus.txt %>%
-    cluster_library("multidplyr") %>%
-    cluster_library("dplyr") %>%
-    cluster_assign_value("n", 2) %>%
-    cluster_assign_value("t", t)
-
-  group.corpus.txt %>%
-    mutate(ntoken <- t(txt)) %>%
-    combine()
-
-  return(group.corpus.txt)
+  if(((round(iter/max(ids), digits = 2)*100) %% 25) < 2)
+        print(sprintf(" about %f percent complete..", round(iter/max(ids), digits = 2)*100 ))
+  }
 
 }
+
+
+get.ngram.chunks <- function(ng, file.name) {
+
+  #'@param ng number of tokens
+  #'@param file.name name of the ngram file
+
+
+
+  if(!dir.exists(data.temp.ng.dir)) dir.create(data.temp.ng.dir, showWarnings = FALSE)
+
+  list.files <- list.files(data.temp.dir)
+
+
+  for(iter in 1:length(list.files)) {
+
+    print(sprintf("Starting to process %d /%d file", iter, length(list.files) ))
+    temp <- read.csv(paste("./", data.temp.dir, "/", list.files[iter], sep=""))
+
+    temp.ngrams <- NULL
+
+    for(line in 1:nrow(temp)) {
+
+      temp.ngrams <- c(temp.ngrams, t(temp$txt[line], ng))
+
+    }
+
+    saveRDS(temp.ngrams, sprintf("%s/%s_%d_gram_%d_chunk.rds", data.temp.ng.dir,file.name,ng, iter ))
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -66,20 +113,15 @@ get.ngrams <- function(txt, n) {
 #' It takes in a line of text and the ngram detail to give you
 #' the parsed string
 
-t <- function(txt, n){
+t <- function(text, ndg){
 
   #' @param txt line of text to split
   #' @param n number of words you want(ngram)
 
-  return(RWeka::NGramTokenizer(txt, RWeka::Weka_control(min = n, max = n, delimiters = " \\r\\n\\t")))
+  tokens <- RWeka::NGramTokenizer(text,
+                                      RWeka::Weka_control(min = ndg,
+                                                          max = ndg,
+                                                          delimiters = " \\r\\n\\t"))
+  return(tokens)
 
 }
-
-
-
-
-
-
-
-
-

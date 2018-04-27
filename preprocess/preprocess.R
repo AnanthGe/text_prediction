@@ -25,7 +25,8 @@ clean.corpus <-
     ## Start parallel
     clusters <- multidplyr::create_cluster(cores = number.workers, quiet = TRUE)
 
-    text.corpus.groups <- partition(text.corpus, group.numbers)
+    text.corpus.groups <- text.corpus %>%
+      partition(group.numbers, cluster = clusters)
 
     text.corpus.groups <-
       text.corpus.groups %>%
@@ -45,6 +46,8 @@ clean.corpus <-
       mutate( cleantxt = clean.line(txt) ) %>%
       collect()
     t2<- Sys.time()
+
+    sprintf("Cleaning completed in %.4f", t2-t1)
 
     return(paral)
 
