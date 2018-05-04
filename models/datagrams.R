@@ -50,7 +50,7 @@ get.ngram.chunks <- function(ng, file.name) {
 
   if(!dir.exists(data.temp.ng.dir)) dir.create(data.temp.ng.dir, showWarnings = FALSE)
 
-  list.files <- list.files(data.temp.dir)
+  list.files <- list.files(data.temp.dir, pattern = "*.csv")
 
 
   for(iter in 1:length(list.files)) {
