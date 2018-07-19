@@ -32,6 +32,8 @@ if(!dir.exists("data")) {
 #'
 
 if(!dir.exists(data.compress.dir)) {
+
+  print("Extracting data in parallel....")
   ## Create the directory
   dir.create(data.compress.dir, showWarnings = FALSE)
 
@@ -56,8 +58,8 @@ if(!dir.exists(data.compress.dir)) {
                                            ".rds", sep = ""),
                 ascii = FALSE, compress = TRUE)
 
-
       }
 
+      print("Extraction Complete...")
 }
 

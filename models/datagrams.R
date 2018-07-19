@@ -46,8 +46,6 @@ get.ngram.chunks <- function(ng, file.name) {
   #'@param ng number of tokens
   #'@param file.name name of the ngram file
 
-
-
   if(!dir.exists(data.temp.ng.dir)) dir.create(data.temp.ng.dir, showWarnings = FALSE)
 
   list.files <- list.files(data.temp.dir, pattern = "*.csv")
