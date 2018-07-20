@@ -35,9 +35,13 @@ if(!dir.exists(data.samples.dir)) {
 
     data.files <- list.files(data.compress.dir)
 
+    pbar <- txtProgressBar(min=1, max=length(data.files), style = 3)
+    counter <- 1
+
+    print("Creating folds.....")
     foreach(data.file = data.files) %do% {
 
-      message(paste("Processing File:", data.file, sep = ''))
+
       corpus <- readRDS(sprintf("%s/%s", data.compress.dir, data.file))
       corpus.length <- length(corpus)
 
@@ -58,6 +62,8 @@ if(!dir.exists(data.samples.dir)) {
       corpus.test <- c(corpus.test, corpus[test.ids])
       corpus.devtest <- c(corpus.devtest, corpus[devtest.ids])
 
+      setTxtProgressBar(pbar, counter)
+      counter<- counter+1
     }
 
     #Save train/test/devtest samples
